@@ -4,6 +4,8 @@ import Header from "./components/Header";
 import Figure from "./components/Figure";
 import WrongLetters from "./components/WrongLetters";
 import Word from "./components/Word";
+import Notification from "./components/Notification";
+import { notificationSetter } from "./helper/Helpers.js";
 
 const words = [
   "anxiety",
@@ -32,6 +34,7 @@ let selected_word = words[Math.floor(Math.random() * words.length)];
 function App() {
   const [correct_letters, setCorrectLetters] = React.useState([]);
   const [wrong_letters, setWrongLetters] = React.useState([]);
+  const [show_notification, setShowNotification] = React.useState(false);
 
   React.useEffect(() => {
     const handleKeydown = (event) => {
@@ -40,7 +43,7 @@ function App() {
         const letter = key.toLowerCase();
         if (selected_word.includes(letter)) {
           if (correct_letters.includes(letter)) {
-            // Already entered
+            notificationSetter(setShowNotification);
           } else {
             setCorrectLetters((correct_letters) => [
               ...correct_letters,
@@ -49,7 +52,7 @@ function App() {
           }
         } else {
           if (wrong_letters.includes(letter)) {
-            // Already entered
+            notificationSetter(setShowNotification);
           } else {
             setWrongLetters((wrong_letters) => [...wrong_letters, letter]);
           }
@@ -63,14 +66,15 @@ function App() {
   }, [correct_letters, wrong_letters]);
 
   return (
-    <div className="App">
+    <React.Fragment>
       <Header />
       <div className="Body">
         <Figure wrong_letters={wrong_letters} />
         <WrongLetters wrong_letters={wrong_letters} />
         <Word selected_word={selected_word} correct_letters={correct_letters} />
       </div>
-    </div>
+      <Notification show_notification={show_notification} />
+    </React.Fragment>
   );
 }
 
